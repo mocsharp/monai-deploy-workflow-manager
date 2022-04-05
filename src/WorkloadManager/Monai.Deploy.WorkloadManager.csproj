@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -43,6 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\monai-deploy-informatics-gateway\src\MessageBroker\RabbitMq\Monai.Deploy.MessageBroker.csproj" />
     <ProjectReference Include="..\Configuration\Monai.Deploy.WorkloadManager.Configuration.csproj" />
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkloadManager.Contracts.csproj" />
     <ProjectReference Include="..\Database\Monai.Deploy.WorkloadManager.Database.csproj" />

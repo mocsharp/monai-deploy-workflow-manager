@@ -10,21 +10,27 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Monai.Deploy.MessageBroker;
+using Monai.Deploy.MessageBroker.RabbitMq;
+using Monai.Deploy.WorkloadManager.Common;
 using Monai.Deploy.WorkloadManager.Configuration;
 using Monai.Deploy.WorkloadManager.Services.DataRetentionService;
 using Monai.Deploy.WorkloadManager.Services.Http;
 
 namespace Monai.Deploy.WorkloadManager
 {
-    internal static class Program
+    internal class Program
     {
+        protected Program()
+        { }
+
         private static void Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
             host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        internal static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureHostConfiguration(configHost =>
                 {
@@ -57,6 +63,25 @@ namespace Monai.Deploy.WorkloadManager
                     services.AddSingleton<DataRetentionService>();
 
                     services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
+
+                    // MessageBroker
+                    services.AddSingleton<RabbitMqMessagePublisherService>();
+                    services.AddSingleton<IMessageBrokerPublisherService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<WorkloadManagerOptions>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IMessageBrokerPublisherService>(logger, options.Value.Messaging.PublisherServiceAssemblyName);
+                    });
+
+                    services.AddSingleton<RabbitMqMessageSubscriberService>();
+                    services.AddSingleton<IMessageBrokerSubscriberService>(implementationFactory =>
+                    {
+                        var options = implementationFactory.GetService<IOptions<WorkloadManagerOptions>>();
+                        var serviceProvider = implementationFactory.GetService<IServiceProvider>();
+                        var logger = implementationFactory.GetService<ILogger<Program>>();
+                        return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
+                    });
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

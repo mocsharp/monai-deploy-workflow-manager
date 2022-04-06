@@ -6,16 +6,19 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Monai.Deploy.MessageBroker;
-using Monai.Deploy.MessageBroker.RabbitMq;
 using Monai.Deploy.WorkloadManager.Common;
 using Monai.Deploy.WorkloadManager.Configuration;
 using Monai.Deploy.WorkloadManager.Services.DataRetentionService;
 using Monai.Deploy.WorkloadManager.Services.Http;
+using Monai.Deploy.WorkloadManager.PayloadListener.Services;
+using Monai.Deploy.WorkloadManager.PayloadListener.Validators;
+using Monai.Deploy.Messaging.RabbitMq;
+using Monai.Deploy.Messaging;
+using Monai.Deploy.Messaging.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Monai.Deploy.WorkloadManager
 {
@@ -56,6 +59,11 @@ namespace Monai.Deploy.WorkloadManager
                         .PostConfigure(options =>
                         {
                         });
+                    services.AddOptions<MessageBrokerServiceConfiguration>()
+                        .Bind(hostContext.Configuration.GetSection("WorkloadManager:messaging"))
+                        .PostConfigure(options =>
+                        {
+                        });
                     services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<WorkloadManagerOptions>, ConfigurationValidator>());
 
                     services.AddSingleton<ConfigurationValidator>();
@@ -82,6 +90,14 @@ namespace Monai.Deploy.WorkloadManager
                         var logger = implementationFactory.GetService<ILogger<Program>>();
                         return serviceProvider.LocateService<IMessageBrokerSubscriberService>(logger, options.Value.Messaging.SubscriberServiceAssemblyName);
                     });
+
+                    services.AddSingleton<IEventPayloadListenerService, EventPayloadListenerService>();
+                    services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
+
+
+                    services.AddSingleton<PayloadListenerService>();
+
+                    services.AddHostedService<PayloadListenerService>(p => p.GetService<PayloadListenerService>());
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

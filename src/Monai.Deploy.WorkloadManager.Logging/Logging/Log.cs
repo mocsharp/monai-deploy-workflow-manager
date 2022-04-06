@@ -1,10 +1,6 @@
-﻿// SPDX-FileCopyrightText: © 2022 MONAI Consortium
-// SPDX-License-Identifier: Apache License 2.0
+﻿using Microsoft.Extensions.Logging;
 
-using System;
-using Microsoft.Extensions.Logging;
-
-namespace Monai.Deploy.WorkloadManager.Logging
+namespace Monai.Deploy.WorkloadManager.Logging.Logging
 {
     public static partial class Log
     {
@@ -40,5 +36,8 @@ namespace Monai.Deploy.WorkloadManager.Logging
 
         [LoggerMessage(EventId = 11, Level = LogLevel.Critical, Message = "Instance of '{type}' cannot be found.")]
         public static partial void InstanceOfTypeNotFound(this ILogger logger, string type);
+
+        [LoggerMessage(EventId = 12, Level = LogLevel.Information, Message = "{ServiceName} subscribed to {RoutingKey} messages.")]
+        public static partial void EventSubscription(this ILogger logger, string serviceName, string routingKey);
     }
 }

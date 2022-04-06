@@ -3,9 +3,9 @@
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Monai.Deploy.WorkloadManager.Common.Services;
 using Monai.Deploy.WorkloadManager.Contracts.Rest;
-using Monai.Deploy.WorkloadManager.Logging;
-using Monai.Deploy.WorkloadManager.Services.Common;
+using Monai.Deploy.WorkloadManager.Logging.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

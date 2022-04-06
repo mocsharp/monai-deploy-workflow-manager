@@ -1,11 +1,8 @@
-// SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
-// SPDX-License-Identifier: Apache License 2.0
-
-using Karambolo.Extensions.Logging.File;
-using Microsoft.Extensions.Logging;
-using System;
+ï»¿using System;
 using System.Globalization;
 using System.Text;
+using Karambolo.Extensions.Logging.File;
+using Microsoft.Extensions.Logging;
 
 namespace Monai.Deploy.WorkloadManager.Logging
 {

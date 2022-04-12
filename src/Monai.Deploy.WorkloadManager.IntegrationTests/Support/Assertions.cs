@@ -46,29 +46,10 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
 
         public void AssertTaskDispatchMessage(string testName)
         {
-            string? messagesString = null;
-            var counter = 0;
-            while (messagesString == null && counter <= 10)
-            {
-                messagesString = RabbitClientUtil.ReturnMessagesFromQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-                if (!string.IsNullOrEmpty(messagesString))
-                {
-                    var workflowMessage = JsonConvert.DeserializeObject<TaskObject>(messagesString);
-                    var workflowTestData = TestData.WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
-                    workflowMessage.Equals(workflowTestData);
-                    break;
-                }
-                counter++;
-                Thread.Sleep(1000);
-            }
-
-            if (string.IsNullOrEmpty(messagesString))
-            {
-                throw new Exception($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue} returned 0 messages. Please check the logs");
-            }
+            throw new NotImplementedException();
         }
 
-        public void AssertMongoDagDocument(string testName)
+        public void AssertMongoWorkflowDocument(string testName)
         {
             DummyDag document = null;
             var counter = 0;
@@ -91,28 +72,9 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
             }
         }
 
-        public void AssertTaskDispatch(string testName, string correlationId)
+        public void AssertWorkflow(string testName, string correlationId)
         {
-            string? messagesString = null;
-            var counter = 0;
-            while (messagesString == null && counter <= 10)
-            {
-                messagesString = RabbitClientUtil.ReturnMessagesFromQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
-                if (!string.IsNullOrEmpty(messagesString))
-                {
-                    var workflowMessage = JsonConvert.DeserializeObject<TaskObject>(messagesString);
-                    var workflowTestData = MongoWorkflows.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
-                    workflowMessage.Equals(workflowTestData);
-                    break;
-                }
-                counter++;
-                Thread.Sleep(1000);
-            }
-
-            if (string.IsNullOrEmpty(messagesString))
-            {
-                throw new Exception($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue} returned 0 messages. Please check the logs");
-            }
+            throw new NotImplementedException();
         }
     }
 }

@@ -101,7 +101,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
                 if (!string.IsNullOrEmpty(messagesString))
                 {
                     var workflowMessage = JsonConvert.DeserializeObject<TaskObject>(messagesString);
-                    var workflowTestData = TaskDispatchMessages.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
+                    var workflowTestData = MongoWorkflows.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
                     workflowMessage.Equals(workflowTestData);
                     break;
                 }

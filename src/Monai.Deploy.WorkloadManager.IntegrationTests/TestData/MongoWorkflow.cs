@@ -2,18 +2,18 @@
 
 namespace Monai.Deploy.WorkloadManager.IntegrationTests.TestData
 {
-    public class TaskDispatchMessage
+    public class MongoWorkflow
     {
         public string? TestName { get; set; }
 
         public Workflow? Workflow { get; set; }
     }
 
-    public static class TaskDispatchMessages
+    public static class MongoWorkflows
     {
-        public static List<TaskDispatchMessage> TestData = new List<TaskDispatchMessage>()
+        public static List<MongoWorkflow> TestData = new List<MongoWorkflow>()
         {
-                new TaskDispatchMessage
+                new MongoWorkflow
                 {
                     TestName = "WorkflowEvent_1",
                     Workflow = new Workflow

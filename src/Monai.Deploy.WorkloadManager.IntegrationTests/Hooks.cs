@@ -1,5 +1,4 @@
-﻿
-using BoDi;
+﻿using BoDi;
 using Microsoft.Extensions.Configuration;
 using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkloadManager.IntegrationTests.Support;

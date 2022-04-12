@@ -17,7 +17,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
 
         private MongoClientUtil MongoClientUtil { get; set; }
 
-        public void AssertExportMessageRequest(string testName)
+        public void AssertExportMessageRequest(string testName, string correlationId)
         {
             string? messagesString = null;
             var counter = 0;
@@ -26,10 +26,13 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
                 messagesString = RabbitClientUtil.ReturnMessagesFromQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
                 if (!string.IsNullOrEmpty(messagesString))
                 {
-                    var workflowMessage = JsonConvert.DeserializeObject<Workflow>(messagesString);
-                    var workflowTestData = TestData.WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
-                    workflowMessage.Equals(workflowTestData);
-                    break;
+                    var workflowMessage = JsonConvert.DeserializeObject<ExportMessageRequest>(messagesString);
+                    if (workflowMessage.CorrelationId == correlationId)
+                    {
+                        var workflowTestData = WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
+                        workflowMessage.Equals(workflowTestData);
+                        break;
+                    }
                 }
                 counter++;
                 Thread.Sleep(1000);
@@ -85,6 +88,30 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
             if (document == null)
             {
                 throw new Exception($"{dagTestData.DummyDag.Id} returned 0 documents. Please check the logs");
+            }
+        }
+
+        public void AssertTaskDispatch(string testName, string correlationId)
+        {
+            string? messagesString = null;
+            var counter = 0;
+            while (messagesString == null && counter <= 10)
+            {
+                messagesString = RabbitClientUtil.ReturnMessagesFromQueue(TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+                if (!string.IsNullOrEmpty(messagesString))
+                {
+                    var workflowMessage = JsonConvert.DeserializeObject<TaskObject>(messagesString);
+                    var workflowTestData = TaskDispatchMessages.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
+                    workflowMessage.Equals(workflowTestData);
+                    break;
+                }
+                counter++;
+                Thread.Sleep(1000);
+            }
+
+            if (string.IsNullOrEmpty(messagesString))
+            {
+                throw new Exception($"{TestExecutionConfig.RabbitConfig.WorkflowRequestQueue} returned 0 messages. Please check the logs");
             }
         }
     }

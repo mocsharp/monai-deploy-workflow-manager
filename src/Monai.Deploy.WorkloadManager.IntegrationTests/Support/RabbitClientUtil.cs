@@ -63,7 +63,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
 
         public string ReturnMessagesFromQueue(string queueName)
         {
-            var data = Channel.BasicGet(queueName, false);
+            var data = Channel.BasicGet(queueName, true);
             var message = data.Body.ToArray();
             var str = Encoding.Default.GetString(message);
             return str;

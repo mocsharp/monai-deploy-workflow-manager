@@ -59,16 +59,16 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests
             ObjectContainer.RegisterInstanceAs(MongoClient);
         }
 
-        [AfterScenario(tags: "rabbit")]
+        [AfterScenario]
         public void CleanUp()
         {
             RabbitClient.PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            MongoClient.DropDatabase(TestExecutionConfig.MongoConfig.Database);
         }
 
         [AfterTestRun]
         public static void TearDown()
         {
-            MongoClient.DropDatabase(TestExecutionConfig.MongoConfig.Database);
             RabbitClient.DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             RabbitClient.CloseConnection();
         }

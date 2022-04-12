@@ -75,10 +75,13 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Features
         
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Basic mongo and rabbit test")]
-        public virtual void BasicMongoAndRabbitTest()
+        [NUnit.Framework.TestCaseAttribute("ExportMessageRequest_1", null)]
+        [NUnit.Framework.TestCaseAttribute("ExportMessageRequest_2", null)]
+        public virtual void BasicMongoAndRabbitTest(string workflowMessage, string[] exampleTags)
         {
-            string[] tagsOfScenario = ((string[])(null));
+            string[] tagsOfScenario = exampleTags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("WorkflowMessage", workflowMessage);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Basic mongo and rabbit test", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 3
 this.ScenarioInitialize(scenarioInfo);

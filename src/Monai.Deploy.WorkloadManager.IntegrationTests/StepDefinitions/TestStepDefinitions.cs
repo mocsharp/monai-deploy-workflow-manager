@@ -21,12 +21,16 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
 
         private Assertions Assertions { get; set; }
 
+        private string CorrelationId { get; set; }
+
         [When(@"I publish an Export Message Request (.*)")]
         public void WhenIPublishAnExportMessageRequest(string testName)
         {
-            var workflowTestData = TestData.WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
+            var workflowTestData = WorkflowRequests.TestData.FirstOrDefault(c => c.TestName.Contains(testName));
+
             if (workflowTestData != null)
             {
+                CorrelationId = workflowTestData.ExportMessageRequest.CorrelationId;
                 var message = JsonConvert.SerializeObject(workflowTestData.ExportMessageRequest);
                 RabbitClientUtil.PublishMessage(message, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             }
@@ -39,7 +43,7 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         [Then(@"I can see the event (.*)")]
         public void ThenICanSeeTheEvent(string testName)
         {
-            Assertions.AssertExportMessageRequest(testName);
+            Assertions.AssertExportMessageRequest(testName, CorrelationId);
         }
 
         [Given(@"I have a DAG in Mongo (.*)")]

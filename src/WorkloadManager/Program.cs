@@ -19,6 +19,10 @@ using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Monai.Deploy.WorkloadManager.Database;
+using Monai.Deploy.WorkloadManager.Database.Interfaces;
+using Monai.Deploy.WorkloadManager.Database.Options;
+using MongoDB.Driver;
 
 namespace Monai.Deploy.WorkloadManager
 {
@@ -72,6 +76,11 @@ namespace Monai.Deploy.WorkloadManager
 
                     services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
 
+                    // Mongo DB
+                    services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
+                    services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
+                    services.AddTransient<IWorkflowRepository, WorkflowRepository>();
+
                     // MessageBroker
                     services.AddSingleton<RabbitMqMessagePublisherService>();
                     services.AddSingleton<IMessageBrokerPublisherService>(implementationFactory =>
@@ -93,7 +102,6 @@ namespace Monai.Deploy.WorkloadManager
 
                     services.AddSingleton<IEventPayloadRecieverService, EventPayloadRecieverService>();
                     services.AddTransient<IEventPayloadValidator, EventPayloadValidator>();
-
 
                     services.AddSingleton<PayloadListenerService>();
 

@@ -44,6 +44,11 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests
             TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("TestExecutionConfig:MongoConfig:Database");
             TestExecutionConfig.MongoConfig.Collection = config.GetValue<string>("TestExecutionConfig:MongoConfig:Collection");
 
+            TestExecutionConfig.MinioConfig.Host = config.GetValue<string>("TestExecutionConfig:MinioConfig:Host");
+            TestExecutionConfig.MinioConfig.Port = config.GetValue<int>("TestExecutionConfig:MinioConfig:Port");
+            TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("TestExecutionConfig:MinioConfig:AccessKey");
+            TestExecutionConfig.MinioConfig.SecretKey = config.GetValue<string>("TestExecutionConfig:MinioConfig:SecretKey");
+
             RabbitClient = new RabbitClientUtil();
             MongoClient = new MongoClientUtil();
         }

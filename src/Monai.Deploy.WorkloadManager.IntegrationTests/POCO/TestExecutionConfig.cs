@@ -35,5 +35,16 @@
 
             public static string Collection { get; set; }
         }
+
+        public static class MinioConfig
+        {
+            public static string Host { get; set; }
+
+            public static int Port { get; set; }
+
+            public static string AccessKey { get; set; }
+
+            public static string SecretKey { get; set; }
+        }
     }
 }

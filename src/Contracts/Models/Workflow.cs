@@ -10,23 +10,15 @@ namespace Monai.Deploy.WorkloadManager.Contracts.Models
         [JsonIgnore]
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public Guid? Id { get; set; }
+        public string Id { get; set; }
 
         [JsonIgnore]
-        public Guid? Reference { get; set; }
+        public Guid WorkflowId { get; set; }
 
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        [JsonIgnore]
+        public int Revision { get; set; }
 
-        [JsonProperty(PropertyName = "version")]
-        public string Version { get; set; }
-
-        [JsonProperty(PropertyName = "description")]
-        public string Description { get; set; }
-
-        [JsonProperty(PropertyName = "informatics_gateway")]
-        public InformaticsGateway InformaticsGateway { get; set; }
-
-        public TaskObject[] Tasks { get; set; }
+        [JsonIgnore]
+        public WorkflowSpec WorkflowSpec { get; set; }
     }
 }

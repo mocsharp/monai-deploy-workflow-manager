@@ -80,6 +80,7 @@ namespace Monai.Deploy.WorkloadManager
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                     services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));
                     services.AddTransient<IWorkflowRepository, WorkflowRepository>();
+                    services.AddTransient<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
 
                     // MessageBroker
                     services.AddSingleton<RabbitMqMessagePublisherService>();

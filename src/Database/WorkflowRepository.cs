@@ -11,52 +11,44 @@ namespace Monai.Deploy.WorkloadManager.Database;
 
 public class WorkflowRepository : IWorkflowRepository
 {
-    private readonly IMongoClient _client;
     private readonly IMongoCollection<Workflow> _workflowCollection;
 
     public WorkflowRepository(
         IMongoClient client,
         IOptions<WorkloadManagerDatabaseSettings> bookStoreDatabaseSettings)
     {
-        _client = client;
         var mongoDatabase = client.GetDatabase(bookStoreDatabaseSettings.Value.DatabaseName);
         _workflowCollection = mongoDatabase.GetCollection<Workflow>(bookStoreDatabaseSettings.Value.WorkflowCollectionName);
     }
 
-    public async Task<IList<Workflow>> GetAsync()
+    public async Task<Workflow> GetByWorkflowIdAsync(Guid workflowId)
     {
-        var workflow = await _workflowCollection.Find(_ => true).ToListAsync();
+        var workflow = await _workflowCollection
+            .Find(x => x.WorkflowId == workflowId)
+            .Sort(Builders<Workflow>.Sort.Descending("Revision"))
+            .FirstOrDefaultAsync();
 
         return workflow;
     }
 
-    public async Task<Workflow> GetByReferenceAsync(Guid reference)
+    public async Task<IList<Workflow>> GetByWorkflowsIdsAsync(IList<Guid> workflowIds)
     {
-        var workflow = await _workflowCollection.Find(x => x.Reference == reference).FirstOrDefaultAsync();
+        var filterDef = new FilterDefinitionBuilder<Workflow>();
+        var filter = filterDef.In(x => x.WorkflowId, workflowIds);
 
-        return workflow;
+        var workflows = await _workflowCollection
+            .Find(filter).ToListAsync();
+
+        return workflows;
     }
 
     public async Task<Workflow> GetByAeTitleAsync(string aeTitle)
     {
-        var workflow = await _workflowCollection.Find(x => x.InformaticsGateway.AeTitle == aeTitle).FirstOrDefaultAsync();
+        var workflow = await _workflowCollection
+            .Find(x => x.WorkflowSpec.InformaticsGateway.AeTitle == aeTitle)
+            .Sort(Builders<Workflow>.Sort.Descending("Revision"))
+            .FirstOrDefaultAsync();
 
         return workflow;
-    }
-
-    public async Task CreateAsync(Workflow workflow)
-    {
-        using var session = await _client.StartSessionAsync();
-        session.StartTransaction();
-
-        try
-        {
-            await _workflowCollection.InsertOneAsync(workflow);
-            await session.CommitTransactionAsync();
-        }
-        catch (Exception e)
-        {
-            await session.AbortTransactionAsync();
-        }
     }
 }

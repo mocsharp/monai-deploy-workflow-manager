@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Monai.Deploy.WorkloadManager.Contracts.Models;
 
-namespace Monai.Deploy.WorkloadManager.Database.Interfaces
+namespace Monai.Deploy.WorkloadManager.Database.Interfaces;
+
+public interface IWorkflowRepository
 {
-    public interface IWorkflowRepository
-    {
-        Task<IList<Workflow>> GetAsync();
+    Task<Workflow> GetByWorkflowIdAsync(Guid id);
 
-        Task<Workflow> GetByReferenceAsync(Guid id);
+    Task<IList<Workflow>> GetByWorkflowsIdsAsync(IList<Guid> ids);
 
-        Task<Workflow> GetByAeTitleAsync(string aeTitle);
-
-        Task CreateAsync(Workflow workflow);
-    }
+    Task<Workflow> GetByAeTitleAsync(string aeTitle);
 }

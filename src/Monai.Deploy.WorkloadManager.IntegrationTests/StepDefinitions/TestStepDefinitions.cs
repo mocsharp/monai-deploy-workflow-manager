@@ -2,6 +2,7 @@ using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkloadManager.IntegrationTests.Support;
 using Monai.Deploy.WorkloadManager.IntegrationTests.TestData;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
 {
@@ -23,6 +24,8 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         private MinioClientUtil MinioClientUtil { get; set; }
 
         private Assertions Assertions { get; set; }
+
+        private Minio.DataModel.ListAllMyBucketsResult res { get; set; }
 
         private string CorrelationId { get; set; }
 
@@ -70,15 +73,15 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         }
 
         [Given(@"I have a MinIO spun up")]
-        public void GivenIhaveaMinIOspunup()
+        public async void GivenIhaveaMinIOspunup()
         {
-            MinioClientUtil.ListBuckets();
+            await MinioClientUtil.ListBuckets();
         }
 
         [When(@"I add a file")]
         public void WhenIaddafile()
         {
-            return;
+            Debug.Write(res);
         }
 
         [Then(@"I can see the file")]

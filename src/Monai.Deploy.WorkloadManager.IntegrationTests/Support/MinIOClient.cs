@@ -1,6 +1,7 @@
 ﻿using Monai.Deploy.WorkloadManager.IntegrationTests.Models;
 using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
 using Minio;
+using System;
 
 namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
 {
@@ -8,18 +9,31 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
     {
         public MinioClientUtil()
         {
-            var connectionString = $"\"{TestExecutionConfig.MinioConfig.Host}:{TestExecutionConfig.MinioConfig.Port}\"," +
-                $"\"{TestExecutionConfig.MinioConfig.AccessKey}\"," +
-                $"\"{TestExecutionConfig.MinioConfig.SecretKey}\"";
-            Client = new MinioClient(connectionString).WithSSL();
+            Client = new MinioClient()
+                                    .WithEndpoint("play.min.io")
+                                    .WithCredentials("Q3AM3UQ867SPQQA43P2F",
+                                             "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG")
+                                    .Build();
         }
 
-        private MinioClient Client { get; set; }
+        private static MinioClient Client { get; set; }
 
 
-        public void ListBuckets()
+        public async Task ListBuckets()
         {
-            var getListBucketsTask = Client.ListBucketsAsync();
+            try
+            {
+                // List buckets that have read access.
+                var list = await Client.ListBucketsAsync();
+                foreach (var bucket in list.Buckets)
+                {
+                    Console.WriteLine(bucket.Name + " " + bucket.CreationDateDateTime);
+                }
+            }
+            catch ( Exception )
+            {
+                Console.WriteLine("Error occurred: ");
+            }
         }
     }
 }

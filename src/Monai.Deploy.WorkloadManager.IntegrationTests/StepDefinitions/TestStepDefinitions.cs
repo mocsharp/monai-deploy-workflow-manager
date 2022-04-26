@@ -9,12 +9,10 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
     [Binding]
     public class TestStepDefinitions
     {
-        public TestStepDefinitions(RabbitClientUtil rabbitClientUtil, MongoClientUtil mongoClientUtil, MinioClientUtil minioClientUtil)
+        public TestStepDefinitions()
         {
-            RabbitClientUtil = rabbitClientUtil;
-            MongoClientUtil = mongoClientUtil;
-            MinioClientUtil = minioClientUtil;
-            Assertions = new Assertions(RabbitClientUtil, MongoClientUtil);
+            MinioClientUtil = new MinioClientUtil();
+            Assertions = new Assertions(null, null);
         }
 
         private RabbitClientUtil RabbitClientUtil { get; set; }
@@ -24,8 +22,6 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         private MinioClientUtil MinioClientUtil { get; set; }
 
         private Assertions Assertions { get; set; }
-
-        private Minio.DataModel.ListAllMyBucketsResult res { get; set; }
 
         private string CorrelationId { get; set; }
 
@@ -75,13 +71,24 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         [Given(@"I have a MinIO spun up")]
         public async void GivenIhaveaMinIOspunup()
         {
-            await MinioClientUtil.ListBuckets();
+            try
+            {
+                var res = await MinioClientUtil.ListBuckets();
+                foreach (var bucket in res.Buckets)
+                {
+                    Console.WriteLine(bucket.Name + " " + bucket.CreationDateDateTime);
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error occurred");
+            }
         }
 
         [When(@"I add a file")]
         public void WhenIaddafile()
         {
-            Debug.Write(res);
+            // TO DO
         }
 
         [Then(@"I can see the file")]

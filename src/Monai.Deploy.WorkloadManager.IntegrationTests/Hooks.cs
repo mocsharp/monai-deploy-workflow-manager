@@ -28,53 +28,53 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("TestExecutionConfig:RabbitConfig:Host");
-            TestExecutionConfig.RabbitConfig.Port = config.GetValue<int>("TestExecutionConfig:RabbitConfig:Port");
-            TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("TestExecutionConfig:RabbitConfig:User");
-            TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("TestExecutionConfig:RabbitConfig:Password");
-            TestExecutionConfig.RabbitConfig.WorkflowRequestQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:WorkflowRequestQueue");
-            TestExecutionConfig.RabbitConfig.TaskDispatchQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:TaskDispatchQueue");
-            TestExecutionConfig.RabbitConfig.TaskCallbackQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:TaskCallbacQueue");
-            TestExecutionConfig.RabbitConfig.WorkflowCompleteQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:WorkflowCompleteQueue");
+            //TestExecutionConfig.RabbitConfig.Host = config.GetValue<string>("TestExecutionConfig:RabbitConfig:Host");
+            //TestExecutionConfig.RabbitConfig.Port = config.GetValue<int>("TestExecutionConfig:RabbitConfig:Port");
+            //TestExecutionConfig.RabbitConfig.User = config.GetValue<string>("TestExecutionConfig:RabbitConfig:User");
+            //TestExecutionConfig.RabbitConfig.Password = config.GetValue<string>("TestExecutionConfig:RabbitConfig:Password");
+            //TestExecutionConfig.RabbitConfig.WorkflowRequestQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:WorkflowRequestQueue");
+            //TestExecutionConfig.RabbitConfig.TaskDispatchQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:TaskDispatchQueue");
+            //TestExecutionConfig.RabbitConfig.TaskCallbackQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:TaskCallbacQueue");
+            //TestExecutionConfig.RabbitConfig.WorkflowCompleteQueue = config.GetValue<string>("TestExecutionConfig:RabbitConfig:WorkflowCompleteQueue");
 
-            TestExecutionConfig.MongoConfig.Host = config.GetValue<string>("TestExecutionConfig:MongoConfig:Host");
-            TestExecutionConfig.MongoConfig.Port = config.GetValue<int>("TestExecutionConfig:MongoConfig:Port");
-            TestExecutionConfig.MongoConfig.User = config.GetValue<string>("TestExecutionConfig:MongoConfig:User");
-            TestExecutionConfig.MongoConfig.Password = config.GetValue<string>("TestExecutionConfig:MongoConfig:Password");
-            TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("TestExecutionConfig:MongoConfig:Database");
-            TestExecutionConfig.MongoConfig.Collection = config.GetValue<string>("TestExecutionConfig:MongoConfig:Collection");
+            //TestExecutionConfig.MongoConfig.Host = config.GetValue<string>("TestExecutionConfig:MongoConfig:Host");
+            //TestExecutionConfig.MongoConfig.Port = config.GetValue<int>("TestExecutionConfig:MongoConfig:Port");
+            //TestExecutionConfig.MongoConfig.User = config.GetValue<string>("TestExecutionConfig:MongoConfig:User");
+            //TestExecutionConfig.MongoConfig.Password = config.GetValue<string>("TestExecutionConfig:MongoConfig:Password");
+            //TestExecutionConfig.MongoConfig.Database = config.GetValue<string>("TestExecutionConfig:MongoConfig:Database");
+            //TestExecutionConfig.MongoConfig.Collection = config.GetValue<string>("TestExecutionConfig:MongoConfig:Collection");
 
             TestExecutionConfig.MinioConfig.Host = config.GetValue<string>("TestExecutionConfig:MinioConfig:Host");
             TestExecutionConfig.MinioConfig.Port = config.GetValue<int>("TestExecutionConfig:MinioConfig:Port");
             TestExecutionConfig.MinioConfig.AccessKey = config.GetValue<string>("TestExecutionConfig:MinioConfig:AccessKey");
             TestExecutionConfig.MinioConfig.SecretKey = config.GetValue<string>("TestExecutionConfig:MinioConfig:SecretKey");
 
-            RabbitClient = new RabbitClientUtil();
-            MongoClient = new MongoClientUtil();
+            //RabbitClient = new RabbitClientUtil();
+            //MongoClient = new MongoClientUtil();
         }
 
         [BeforeScenario]
         public void SetUp()
         {
-            RabbitClient.CreateQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            MongoClient.GetDatabase(TestExecutionConfig.MongoConfig.Database);
-            MongoClient.GetDagCollection(TestExecutionConfig.MongoConfig.Collection);
-            ObjectContainer.RegisterInstanceAs(RabbitClient);
-            ObjectContainer.RegisterInstanceAs(MongoClient);
+            //RabbitClient.CreateQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            //MongoClient.GetDatabase(TestExecutionConfig.MongoConfig.Database);
+            //MongoClient.GetDagCollection(TestExecutionConfig.MongoConfig.Collection);
+            //ObjectContainer.RegisterInstanceAs(RabbitClient);
+            //ObjectContainer.RegisterInstanceAs(MongoClient);
         }
 
         [AfterScenario]
         public void CleanUp()
         {
-            RabbitClient.PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            MongoClient.DropDatabase(TestExecutionConfig.MongoConfig.Database);
+            //RabbitClient.PurgeQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            //MongoClient.DropDatabase(TestExecutionConfig.MongoConfig.Database);
         }
 
         [AfterTestRun]
         public static void TearDown()
         {
-            RabbitClient.DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
-            RabbitClient.CloseConnection();
+            //RabbitClient.DeleteQueue(TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
+            //RabbitClient.CloseConnection();
         }
     }
 }

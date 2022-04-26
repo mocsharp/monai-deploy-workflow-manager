@@ -1,7 +1,5 @@
-﻿using Monai.Deploy.WorkloadManager.IntegrationTests.Models;
-using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
-using Minio;
-using System;
+﻿using Minio;
+using Minio.DataModel;
 
 namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
 {
@@ -16,24 +14,12 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.Support
                                     .Build();
         }
 
-        private static MinioClient Client { get; set; }
+        private MinioClient Client { get; set; }
 
 
-        public async Task ListBuckets()
+        public async Task<ListAllMyBucketsResult> ListBuckets()
         {
-            try
-            {
-                // List buckets that have read access.
-                var list = await Client.ListBucketsAsync();
-                foreach (var bucket in list.Buckets)
-                {
-                    Console.WriteLine(bucket.Name + " " + bucket.CreationDateDateTime);
-                }
-            }
-            catch ( Exception )
-            {
-                Console.WriteLine("Error occurred: ");
-            }
+            return Client.ListBucketsAsync().Result;
         }
     }
 }

@@ -2,7 +2,7 @@ using Monai.Deploy.WorkloadManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkloadManager.IntegrationTests.Support;
 using Monai.Deploy.WorkloadManager.IntegrationTests.TestData;
 using Newtonsoft.Json;
-using System.Diagnostics;
+using FluentAssertions;
 
 namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
 {
@@ -71,36 +71,27 @@ namespace Monai.Deploy.WorkloadManager.IntegrationTests.StepDefinitions
         [Given(@"I have a MinIO spun up")]
         public async void GivenIhaveaMinIOspunup()
         {
-            try
-            {
-                var res = await MinioClientUtil.ListBuckets();
-                foreach (var bucket in res.Buckets)
-                {
-                    Console.WriteLine(bucket.Name + " " + bucket.CreationDateDateTime);
-                }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Error occurred");
-            }
+            return;
+        }
+
+        [When(@"I add a bucket")]
+        public async void WhenIaddabucket()
+        {
+            await MinioClientUtil.CreateBucket("test-bucket");
+
         }
 
         [When(@"I add a file")]
-        public void WhenIaddafile()
+        public async void WhenIaddafile()
         {
-            // TO DO
-        }
-
-        [Then(@"I can see the file")]
-        public void ThenIcanseethefile()
-        {
-            return;
+            await MinioClientUtil.AddFile("../../../TestData/DummyDag.cs", "test-bucket", "testfile.txt");
         }
 
         [Then(@"I can retrieve the file")]
-        public void ThenIcanretrievethefile()
+        public async void ThenIcanretrievethefile()
         {
-            return;
+                var res = await MinioClientUtil.GetFile("test-bucket", "testfile.txt", "testfile.txt");
+                res.ObjectName.Should().BeEquivalentTo("testfile.txt");
         }
     }
 }

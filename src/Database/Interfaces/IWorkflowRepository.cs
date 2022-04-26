@@ -12,4 +12,6 @@ public interface IWorkflowRepository
     Task<IList<Workflow>> GetByWorkflowsIdsAsync(IList<Guid> ids);
 
     Task<Workflow> GetByAeTitleAsync(string aeTitle);
+
+    Task<Guid> CreateAsync(Workflow workflow);
 }

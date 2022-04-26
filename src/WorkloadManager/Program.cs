@@ -19,6 +19,8 @@ using Monai.Deploy.Messaging.RabbitMq;
 using Monai.Deploy.Messaging;
 using Monai.Deploy.Messaging.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Monai.Deploy.WorkloadManager.Common.Services;
+using Monai.Deploy.WorkloadManager.Common.Services.Interfaces;
 using Monai.Deploy.WorkloadManager.Database;
 using Monai.Deploy.WorkloadManager.Database.Interfaces;
 using Monai.Deploy.WorkloadManager.Database.Options;
@@ -75,6 +77,9 @@ namespace Monai.Deploy.WorkloadManager
                     services.AddSingleton<DataRetentionService>();
 
                     services.AddHostedService<DataRetentionService>(p => p.GetService<DataRetentionService>());
+
+                    // Services
+                    services.AddTransient<IWorkflowService, WorkflowService>();
 
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));

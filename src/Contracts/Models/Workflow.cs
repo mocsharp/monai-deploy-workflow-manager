@@ -13,7 +13,7 @@ namespace Monai.Deploy.WorkloadManager.Contracts.Models
         public string Id { get; set; }
 
         [JsonIgnore]
-        public Guid WorkflowId { get; set; }
+        public Guid? WorkflowId { get; set; }
 
         [JsonIgnore]
         public int Revision { get; set; }

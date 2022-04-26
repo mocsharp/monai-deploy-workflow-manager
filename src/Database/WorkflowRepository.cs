@@ -34,7 +34,7 @@ public class WorkflowRepository : IWorkflowRepository
     public async Task<IList<Workflow>> GetByWorkflowsIdsAsync(IList<Guid> workflowIds)
     {
         var filterDef = new FilterDefinitionBuilder<Workflow>();
-        var filter = filterDef.In(x => x.WorkflowId, workflowIds);
+        var filter = filterDef.In(x => x.WorkflowId.Value, workflowIds);
 
         var workflows = await _workflowCollection
             .Find(filter).ToListAsync();
@@ -50,5 +50,23 @@ public class WorkflowRepository : IWorkflowRepository
             .FirstOrDefaultAsync();
 
         return workflow;
+    }
+
+    public async Task<Guid> CreateAsync(Workflow workflow)
+    {
+        if (!workflow.WorkflowId.HasValue)
+        {
+            workflow.WorkflowId = Guid.NewGuid();
+            await _workflowCollection.InsertOneAsync(workflow);
+        }
+        else
+        {
+            var existingWorkflow = await GetByWorkflowIdAsync(workflow.WorkflowId.Value);
+            workflow.WorkflowId = existingWorkflow.WorkflowId;
+            workflow.Revision = existingWorkflow.Revision++;
+            await _workflowCollection.InsertOneAsync(workflow);
+        }
+
+        return workflow.WorkflowId!.Value;
     }
 }

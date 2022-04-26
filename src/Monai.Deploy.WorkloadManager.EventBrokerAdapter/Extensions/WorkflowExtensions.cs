@@ -54,14 +54,14 @@ namespace Monai.Deploy.WorkloadManager.PayloadListener.Extensions
 
             var valid = true;
 
-            valid &= IsNameValid(workflow.GetType().Name, workflow.Name, validationErrors);
-            valid &= IsDescriptionValid(workflow.GetType().Name, workflow.Description, validationErrors);
-            valid &= IsInformaticsGatewayValid(workflow.GetType().Name, workflow.InformaticsGateway, validationErrors);
+            valid &= IsNameValid(workflow.GetType().Name, workflow.WorkflowSpec.Name, validationErrors);
+            valid &= IsDescriptionValid(workflow.GetType().Name, workflow.WorkflowSpec.Description, validationErrors);
+            valid &= IsInformaticsGatewayValid(workflow.GetType().Name, workflow.WorkflowSpec.InformaticsGateway, validationErrors);
 
-            Guard.Against.Null(workflow.Tasks, nameof(workflow.Tasks));
-            valid &= workflow.Tasks.Length > 0;
+            Guard.Against.Null(workflow.WorkflowSpec.Tasks, nameof(workflow.WorkflowSpec.Tasks));
+            valid &= workflow.WorkflowSpec.Tasks.Length > 0;
 
-            foreach (var task in workflow.Tasks)
+            foreach (var task in workflow.WorkflowSpec.Tasks)
             {
                 valid &= IsTaskObjectValid(workflow.GetType().Name, task, validationErrors);
             }

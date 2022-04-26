@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Contracts\Monai.Deploy.WorkloadManager.Contracts.csproj" />
+    <ProjectReference Include="..\Database\Monai.Deploy.WorkloadManager.Database.csproj" />
   </ItemGroup>
 
 </Project>

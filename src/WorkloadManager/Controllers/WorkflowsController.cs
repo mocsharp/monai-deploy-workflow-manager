@@ -12,7 +12,10 @@ namespace Monai.Deploy.WorkloadManager.Controllers;
 /// <summary>
 /// Workflows Controller
 /// </summary>
-public class WorkflowsController : Controller
+
+[ApiController]
+[Route("[controller]")]
+public class WorkflowsController : ControllerBase
 {
     private readonly IWorkflowService _workflowService;
 
@@ -22,7 +25,7 @@ public class WorkflowsController : Controller
     /// <param name="workflowService"></param>
     public WorkflowsController(IWorkflowService workflowService)
     {
-        this._workflowService = workflowService;
+        _workflowService = workflowService;
     }
 
     /// <summary>
@@ -30,17 +33,17 @@ public class WorkflowsController : Controller
     /// </summary>
     /// <param name="id">The Workflow Id</param>
     /// <returns>The ID of the created Workflow.</returns>
-    [HttpPost]
+    [HttpGet]
     public async Task<IActionResult> GetAsync([FromRoute] Guid? id)
     {
         if (!id.HasValue || id.Value == Guid.Empty)
         {
-            return this.BadRequest();
+            return BadRequest();
         }
 
-        var workflow = await this._workflowService.GetAsync(id.Value);
+        var workflow = await _workflowService.GetAsync(id.Value);
 
-        return this.Ok(workflow);
+        return Ok(workflow);
     }
 
     /// <summary>
@@ -53,11 +56,11 @@ public class WorkflowsController : Controller
     {
         if (!workflow.IsValid(out var validationErrors))
         {
-            return this.BadRequest();
+            return BadRequest();
         }
 
-        var workflowId = await this._workflowService.CreateAsync(workflow);
+        var workflowId = await _workflowService.CreateAsync(workflow);
 
-        return this.StatusCode(StatusCodes.Status201Created, new CreateWorkflowResponse(workflowId));
+        return StatusCode(StatusCodes.Status201Created, new CreateWorkflowResponse(workflowId));
     }
 }

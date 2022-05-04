@@ -81,6 +81,8 @@ namespace Monai.Deploy.WorkloadManager
                     // Services
                     services.AddTransient<IWorkflowService, WorkflowService>();
 
+                    services.AddSingleton<IRabbitMqConnectionFactory, RabbitMqConnectionFactory>();
+
                     // Mongo DB
                     services.Configure<WorkloadManagerDatabaseSettings>(hostContext.Configuration.GetSection("WorkloadManagerDatabase"));
                     services.AddSingleton<IMongoClient, MongoClient>(s => new MongoClient(hostContext.Configuration["WorkloadManagerDatabase:ConnectionString"]));

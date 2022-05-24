@@ -22,7 +22,7 @@ using Monai.Deploy.WorkflowManager.TaskManager.Argo;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.Runner
 {
-    internal class Program
+    public class Program
     {
         protected Program()
         { }

@@ -27,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         [Given(@"A study is uploaded to the storage service")]
         public async Task AStudyIsUploadedToTheStorageService()
         {
-            await MinioClient.AddFileToStorage("C:\\development\\AI\\AIDE\\MONAI\\monai-deploy-workflow-manager\\tests\\IntegrationTests\\Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests\\bin\\Debug\\net6.0\\DICOMs\\MR000000.dcm", DataHelper.GetPayloadId(), "test");
+            await MinioClient.AddFileToStorage(Path.Combine(GetDirectory(), "DICOMs", "MR000000.dcm"), DataHelper.GetPayloadId(), "test");
         }
 
         [When(@"A Task Dispatch event is published")]
@@ -44,7 +44,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
 
         private string GetDirectory()
         {
-            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
 
         [AfterScenario]

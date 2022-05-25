@@ -13,8 +13,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
         public MinioClientUtil()
         {
             Client = new MinioClient()
-                .WithEndpoint("localhost:9000")
-                .WithCredentials("minioadmin", "minioadmin")
+                .WithEndpoint(TestExecutionConfig.MinIOConfig.ConnectionString)
+                .WithCredentials(TestExecutionConfig.MinIOConfig.User, TestExecutionConfig.MinIOConfig.Password)
                 .Build();
 
             RetryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));

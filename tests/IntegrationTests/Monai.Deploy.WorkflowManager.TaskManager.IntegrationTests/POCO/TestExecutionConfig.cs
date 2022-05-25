@@ -34,17 +34,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             public static string ConnectionString { get; set; }
 
-            public static int Port { get; set; }
-
             public static string User { get; set; }
 
             public static string Password { get; set; }
-
-            public static string Database { get; set; }
-
-            public static string WorkflowCollection { get; set; }
-
-            public static string WorkflowInstanceCollection { get; set; }
         }
     }
 }

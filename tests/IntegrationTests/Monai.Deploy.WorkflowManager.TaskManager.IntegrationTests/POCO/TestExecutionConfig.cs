@@ -37,6 +37,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             public static string User { get; set; }
 
             public static string Password { get; set; }
+
+            public static string BucketName { get; set; }
         }
     }
 }

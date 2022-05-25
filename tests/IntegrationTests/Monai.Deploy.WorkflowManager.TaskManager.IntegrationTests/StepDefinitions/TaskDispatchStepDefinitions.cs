@@ -27,7 +27,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         [Given(@"A study is uploaded to the storage service")]
         public async Task AStudyIsUploadedToTheStorageService()
         {
-            await MinioClient.AddFileToStorage(Path.Combine(GetDirectory(), "DICOMs", "MR000000.dcm"), DataHelper.GetPayloadId(), "test");
+            await MinioClient.AddFileToStorage(Path.Combine(GetDirectory(), "DICOMs", "MR000000.dcm"), TestExecutionConfig.MinIOConfig.BucketName, DataHelper.GetPayloadId());
         }
 
         [When(@"A Task Dispatch event is published")]
@@ -50,7 +50,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.StepDefiniti
         [AfterScenario]
         public async Task DeleteBucket()
         {
-            await MinioClient.DeleteBucket(DataHelper.PayloadId);
+            await MinioClient.RemoveObjects(TestExecutionConfig.MinIOConfig.BucketName, DataHelper.PayloadId);
         }
 
     }

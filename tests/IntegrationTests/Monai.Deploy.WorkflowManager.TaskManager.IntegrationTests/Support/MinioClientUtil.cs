@@ -22,7 +22,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         private MinioClient Client { get; set; }
 
-        public async Task AddFileToStorage(string fileLocation, string bucketName, string objectName)
+        public async Task CreateBucket(string bucketName)
         {
             await RetryPolicy.ExecuteAsync(async () =>
             {
@@ -37,7 +37,13 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
                 {
                     Console.WriteLine($"[Bucket]  Exception: {e}");
                 }
+            });
+        }
 
+        public async Task AddFileToStorage(string fileLocation, string bucketName, string objectName)
+        {
+            await RetryPolicy.ExecuteAsync(async () =>
+            {
                 try
                 {
                     byte[] bs = File.ReadAllBytes(fileLocation);
@@ -78,17 +84,20 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
 
         public async Task DeleteBucket(string bucketName)
         {
-            await RetryPolicy.ExecuteAsync(async () =>
+            bool found = await Client.BucketExistsAsync(bucketName);
+
+            if (found)
             {
-                await RemoveObjects(bucketName);
+                await RetryPolicy.ExecuteAsync(async () =>
+                {
+                    var args = new RemoveBucketArgs().WithBucket(bucketName);
 
-                var args = new RemoveBucketArgs().WithBucket(bucketName);
-
-                await Client.RemoveBucketAsync(args);
-            });
+                    await Client.RemoveBucketAsync(args);
+                });
+            }
         }
 
-        public async Task RemoveObjects(string bucketName)
+        public async Task RemoveObjects(string bucketName, string objectName)
         {
             bool found = await Client.BucketExistsAsync(bucketName);
 
@@ -96,7 +105,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support
             {
                 var args = new RemoveObjectArgs()
                                          .WithBucket(bucketName)
-                                         .WithObject("test");
+                                         .WithObject(objectName);
 
                 await Client.RemoveObjectAsync(args);
             }

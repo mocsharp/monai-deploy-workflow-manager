@@ -13,14 +13,15 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
     {
         public static void SetupTaskManger()
         {
-            var webApplicationFactory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-            {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddSingleton<IArgoProvider, TestArgoProvider>();
-                    services.AddSingleton<IKubernetesProvider, TestKubernetesProvider>();
-                });
-            });
+            var webApplicationFactory = new WebApplicationFactory<Program>();
+            //var webApplicationFactory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            //{
+            //    builder.ConfigureServices(services =>
+            //    {
+            //        services.AddSingleton<IArgoProvider, TestArgoProvider>();
+            //        services.AddSingleton<IKubernetesProvider, TestKubernetesProvider>();
+            //    });
+            //});
 
             _ = webApplicationFactory.CreateClient();
         }

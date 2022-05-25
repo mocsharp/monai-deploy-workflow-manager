@@ -3,6 +3,7 @@
 
 using BoDi;
 using Microsoft.Extensions.Configuration;
+using Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests.Support;
 
 namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
@@ -23,6 +24,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
         private static RabbitPublisher? TaskDispatchPublisher { get; set; }
         private static RabbitConsumer? TaskUpdateConsumer { get; set; }
+        private static MinioClientUtil MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
 
         /// <summary>
@@ -45,13 +47,22 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.RabbitConfig.TaskDispatchQueue = "md.tasks.dispatch";
             TestExecutionConfig.RabbitConfig.TaskCallbackQueue = "md.tasks.callback";
             TestExecutionConfig.RabbitConfig.TaskUpdateQueue = "md.tasks.update";
+
             TestExecutionConfig.MinIOConfig.ConnectionString = "localhost:9000";
             TestExecutionConfig.MinIOConfig.User = "minioadmin";
             TestExecutionConfig.MinIOConfig.Password = "minioadmin";
+            TestExecutionConfig.MinIOConfig.BucketName = "monaideploy";
 
             TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
+            MinioClient = new MinioClientUtil();
             //WebAppFactory.SetupTaskManger();
+        }
+
+        [BeforeTestRun(Order = 2)]
+        public async static Task SetupBucket()
+        {
+            await MinioClient.CreateBucket(TestExecutionConfig.MinIOConfig.BucketName);
         }
 
         /// <summary>
@@ -102,9 +113,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 
         [BeforeTestRun(Order = 1)]
         [AfterTestRun(Order = 0)]
-        public static void ClearTestData()
+        public async static Task ClearTestData()
         {
-            // minio delete all buckets
+            await MinioClient.DeleteBucket(TestExecutionConfig.MinIOConfig.BucketName);
         }
 
         /// <summary>

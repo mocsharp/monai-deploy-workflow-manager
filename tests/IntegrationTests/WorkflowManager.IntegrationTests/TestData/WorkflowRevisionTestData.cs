@@ -519,6 +519,42 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                     }
                 }
             },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Single_Task_Context_Input",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Single Task Context Input",
+                        Description = "Single Task Context Input",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_task",
+                                Description = "Basic Workflow 1 Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                    new Artifact { Name="input", Value="{{ context.input }}" }
+                                    }
+                                }
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Context_AE_1"
+                        }
+                    }
+                }
+            },
         };
     }
 }

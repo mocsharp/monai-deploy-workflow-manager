@@ -6,8 +6,8 @@ Artefacts can get passed into and between tasks
 Scenario Outline: Bucket exists in MinIO, publish workflow request which uses input artefacts
     Given I have a bucket in MinIO dicom
     And I have a clinical workflow Single_Task_Context_Input
-    When I publish a Workflow Request Message single_task_context_input
-    Then I can see task_output_destination Workflow Instance is created
+    When I publish a Workflow Request Message Context_Input_AE
+    Then I can see 1 Workflow Instance is created
     And task_output_destination Task Dispatch event is published
 
 @WorkflowTaskArtefacts

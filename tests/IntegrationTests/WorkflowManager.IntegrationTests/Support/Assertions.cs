@@ -22,6 +22,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                 {
                     task.TaskId.Should().Match(workflowTask.Id);
                     task.TaskType.Should().Match(workflowTask.Type);
+
+                    foreach (var artifact in task.InputArtifacts)
+                    {
+                        artifact.Value.Should().Match("");
+                    }
+                    foreach (var artifact in task.OutputArtifacts)
+                    {
+                        artifact.Value.Should().Match("");
+                    }
                 }
                 else
                 {

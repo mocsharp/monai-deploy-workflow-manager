@@ -23,6 +23,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         }
 
         private static RabbitPublisher? TaskDispatchPublisher { get; set; }
+        private static RabbitPublisher? TaskCallbackPublisher { get; set; }
         private static RabbitConsumer? TaskUpdateConsumer { get; set; }
         private static MinioClientUtil MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
@@ -54,9 +55,10 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             TestExecutionConfig.MinIOConfig.BucketName = "monaideploy";
 
             TaskDispatchPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
+            TaskCallbackPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskCallbackQueue);
             TaskUpdateConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MinioClient = new MinioClientUtil();
-            //WebAppFactory.SetupTaskManger();
+            WebAppFactory.SetupTaskManager();
         }
 
         [BeforeTestRun(Order = 2)]
@@ -106,7 +108,9 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         public void SetUp()
         {
             ObjectContainer.RegisterInstanceAs(TaskDispatchPublisher, "TaskDispatchPublisher");
+            ObjectContainer.RegisterInstanceAs(TaskCallbackPublisher, "TaskCallbackPublisher");
             ObjectContainer.RegisterInstanceAs(TaskUpdateConsumer, "TaskUpdateConsumer");
+            ObjectContainer.RegisterInstanceAs(MinioClient);
             var dataHelper = new DataHelper();
             ObjectContainer.RegisterInstanceAs(dataHelper);
         }

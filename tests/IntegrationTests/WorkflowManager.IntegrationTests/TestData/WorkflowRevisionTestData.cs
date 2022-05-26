@@ -469,6 +469,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                                 Type = "Multi_task",
                                 Description = "Multiple request task 2",
                             },
+
                         },
                         InformaticsGateway = new InformaticsGateway()
                         {

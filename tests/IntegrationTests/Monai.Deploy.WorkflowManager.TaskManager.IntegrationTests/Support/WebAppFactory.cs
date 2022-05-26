@@ -11,7 +11,7 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
 {
     public static class WebAppFactory
     {
-        public static void SetupTaskManger()
+        public static void SetupTaskManager()
         {
             var webApplicationFactory = new WebApplicationFactory<Program>();
             //var webApplicationFactory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>

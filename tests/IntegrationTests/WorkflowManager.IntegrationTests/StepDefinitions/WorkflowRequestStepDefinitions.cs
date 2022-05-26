@@ -18,6 +18,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private MongoClientUtil MongoClient { get; set; }
         private Assertions Assertions { get; set; }
         private DataHelper DataHelper { get; set; }
+        private ScenarioContext ScenarioContext { get; set; }
 
         public WorkflowRequestStepDefinitions(ObjectContainer objectContainer, ScenarioContext scenarioContext)
         {
@@ -26,6 +27,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
             Assertions = new Assertions();
             DataHelper = objectContainer.Resolve<DataHelper>();
+            ScenarioContext = scenarioContext;
         }
 
         [Given(@"I have a clinical workflow (.*)")]
@@ -118,15 +120,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                 {
                     var workflowInstance = MongoClient.GetWorkflowInstanceById(taskDispatchEvent.WorkflowInstanceId);
 
-                    if (taskDispatchEvent.ExecutionId == workflowInstance.Tasks[0].ExecutionId)
+                    int j = 0;
+                    foreach (Contracts.Models.TaskExecution task in workflowInstance.Tasks)
                     {
-                        throw new Exception($"Task Dispatch Event has been published when workflowInstance status was {workflowInstance.Tasks[0].Status}");
+                        if (taskDispatchEvent.ExecutionId == workflowInstance.Tasks[j].ExecutionId)
+                        {
+                            throw new Exception($"Task Dispatch Event has been published when workflowInstance status was {workflowInstance.Tasks[j].Status}");
+                        }
+                        j++;
                     }
                 }
 
                 Thread.Sleep(1000);
             }
         }
+
+        [Then(@"The Task Dispatch event is for Task Id (.*)")]
+        public void ThenTheTaskDispatchEventIsForTaskId(string taskId)
+        {
+            var taskDispatchEvents = DataHelper.TaskDispatchEvents;
+            taskDispatchEvents[0].TaskId.Should().Be(taskId);
+        }
+
 
         [Scope(Tag = "WorkflowRequest")]
         [AfterScenario(Order = 1)]

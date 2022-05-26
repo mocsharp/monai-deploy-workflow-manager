@@ -41,3 +41,10 @@ Scenario: Publish a valid Task Update event as failed which does not trigger a n
     When I publish a Task Update Message Task_Update_Dispatches_Single_Task with status Failed
     Then A Task Dispatch event is not published
     And Workflow Instance status is Failed
+
+@TaskUpdate
+Scenario: Task destination with condition true, WFI is updated with Task and task dispatch message is published
+    Given I have a clinical workflow Multi_Task_Workflow_Destination_Single_Condition_True
+    And I have a Workflow Instance WFI_Task_Destination_Condition_True
+    When I publish a Task Update Message Task_Update_Task_Destination_Condition_True with status Succeeded
+    Then 1 Task Dispatch event is published

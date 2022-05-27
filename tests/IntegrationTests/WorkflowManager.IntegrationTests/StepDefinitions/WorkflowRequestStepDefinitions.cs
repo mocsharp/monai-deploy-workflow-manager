@@ -125,7 +125,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
                     {
                         if (taskDispatchEvent.ExecutionId == workflowInstance.Tasks[j].ExecutionId)
                         {
-                            throw new Exception($"Task Dispatch Event has been published when workflowInstance status was {workflowInstance.Tasks[j].Status}");
+                            throw new Exception($"Task Dispatch Event has been published when no task dispatch events expected. WorkflowInstance status was {workflowInstance.Tasks[j].Status}");
                         }
                         j++;
                     }

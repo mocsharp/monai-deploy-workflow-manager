@@ -538,7 +538,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Type = "Basic_task",
-                                Description = "Basic Workflow 1 Task 1",
+                                Description = "Single Task 1",
                                 Artifacts = new ArtifactMap()
                                 {
                                     Input = new Artifact[]
@@ -551,6 +551,59 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                         InformaticsGateway = new InformaticsGateway()
                         {
                             AeTitle = "Context_AE_1"
+                        }
+                    }
+                }
+            },
+            new WorkflowRevisionTestData()
+            {
+                Name = "Multi_Task_Output_Artifact",
+                WorkflowRevision = new WorkflowRevision()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    WorkflowId = Guid.NewGuid().ToString(),
+                    Revision = 1,
+                    Workflow = new Workflow()
+                    {
+                        Name = "Multi Task Output Artifact",
+                        Description = "Multi Task Output Artifact",
+                        Version = "1",
+                        Tasks = new TaskObject[]
+                        {
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_task",
+                                Description = "Multi Task 1",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                    new Artifact { Name="input", Value="{{ context.input }}" }
+                                    },
+                                    Output = new Artifact[]
+                                    {
+                                    new Artifact { Name="output", Value="{{ context.executions.TASK_ID.artifacts.ARTIFACT_NAME }}" }
+                                    }
+                                }
+                            },
+                            new TaskObject
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Type = "Basic_task",
+                                Description = "Multi Task 2",
+                                Artifacts = new ArtifactMap()
+                                {
+                                    Input = new Artifact[]
+                                    {
+                                    new Artifact { Name="input", Value="{{ context.executions.TASK_ID.artifacts.ARTIFACT_NAME }}" }
+                                    }
+                                }
+                            }
+                        },
+                        InformaticsGateway = new InformaticsGateway()
+                        {
+                            AeTitle = "Context_AE_2"
                         }
                     }
                 }

@@ -7,35 +7,36 @@ Scenario Outline: Bucket exists in MinIO, publish workflow request which uses in
     Given I have a bucket in MinIO dicom
     And I have a clinical workflow Single_Task_Context_Input
     When I publish a Workflow Request Message Context_Input_AE
-    Then I can see 1 Workflow Instance is created
-    And task_output_destination Task Dispatch event is published
+    Then I can see 1 Workflow Instance is created 
+    And 1 Task Dispatch event is published
 
 @WorkflowTaskArtefacts
 Scenario Outline: Bucket does not exist in MinIO, publish workflow request which uses non existant bucket
-    Given I have a clinical workflow 
-    When I publish a Workflow Request Message Bucket_Name
+    Given I have a clinical workflow Single_Task_Context_Input
+    When I publish a Workflow Request Message Context_Input_AE
     Then The workflow instance fails
 
 @WorkflowTaskArtefacts
 Scenario Outline: Create artefact in MinIO, publish task update message with artefact as output
-    Given I have a bucket in MinIO artefact
-    And I have a clinical workflow
-    And I publish a Workflow Request Message Bucket_Name
+    Given I have a bucket in MinIO outputArtefact
+    And I have a clinical workflow Multi_Task_Output_Artifact
+    And I have a Workflow Instance Single_Task_Completed
     When I publish a task update message output_artefact
-    Then The workflow instance is updated with correct file path
-    And The task dispatch message is updated with correct file path
+    Then I can see 1 Workflow Instance is created 
+    And 1 Task Dispatch event is published
 
 @WorkflowTaskArtefacts
 Scenario Outline: Bucket exists in MinIO, send task dispatch with non existant file path
     Given I have a bucket in MinIO dicom
-    And I have a clinical workflow
-    And I have a workflow instance
-    When I publish a task dispatch Message non_existant_filepath-required
+    And I have a clinical workflow Single_Task_Context_Input
+    When I publish a Workflow Request Message Context_Input_AE
+    When I publish a task update message output_artefact
     Then The workflow instance fails
 
 @WorkflowTaskArtefacts
 Scenario Outline: Bucket exists in MinIO, send task dispatch with non existant artefact
     Given I have a bucket in MinIO dicom
-    And I have a clinical workflow
-    When I publish a workflow instance non_existant_artefact
+    And I have a clinical workflow Single_Task_Context_Input
+    And I have a Workflow Instance non_existant_artefact
+    When I publish a Workflow Request Message Context_Input_AE
     Then The workflow instance fails

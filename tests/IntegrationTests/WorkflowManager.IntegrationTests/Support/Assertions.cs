@@ -25,11 +25,11 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
 
                     foreach (var artifact in task.InputArtifacts)
                     {
-                        artifact.Value.Should().Match("");
+                        artifact.Value.Should().Match(""); // Need to finish assertion
                     }
                     foreach (var artifact in task.OutputArtifacts)
                     {
-                        artifact.Value.Should().Match("");
+                        artifact.Value.Should().Match(""); // Need to finish assertion
                     }
                 }
                 else
@@ -62,6 +62,8 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             {
                 taskDispatchEvent.TaskId.Should().Match(taskDetails.TaskId);
             }
+
+            // Need to add assertion for artifacts
 
             taskDetails.Status.Should().Be(TaskExecutionStatus.Dispatched);
         }

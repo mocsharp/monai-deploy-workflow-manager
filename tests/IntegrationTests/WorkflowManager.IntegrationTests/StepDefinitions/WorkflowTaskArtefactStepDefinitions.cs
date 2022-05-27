@@ -48,7 +48,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         }
 
         [When(@"I publish a task update message (.*)")]
-        public void WhenIPublishATaskUpdateMessage()
+        public void WhenIPublishATaskUpdateMessage(string name)
         {
             throw new PendingStepException();
         }
@@ -81,29 +81,6 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public void WhenIPublishAWorkflowInstance()
         {
             throw new PendingStepException();
-        }
-
-        [Then(@"I can see (.*) Instance is created with (.*) artefacts")]
-        public void ThenICanSeeIsCreatedWithArtefacts(int count, string name)
-        {
-            var workflowInstances = DataHelper.GetWorkflowInstances(count, DataHelper.WorkflowRequestMessage.PayloadId.ToString());
-
-            if (workflowInstances != null)
-            {
-                foreach (var workflowInstance in workflowInstances)
-                {
-                    var workflow = DataHelper.WorkflowRevisions.FirstOrDefault(x => x.WorkflowId.Equals(workflowInstance.WorkflowId));
-
-                    if (workflow != null)
-                    {
-                        Assertions.AssertWorkflowInstanceMatchesExpectedWorkflow(workflowInstance, workflow, DataHelper.WorkflowRequestMessage);
-                    }
-                    else
-                    {
-                        throw new Exception($"Workflow not found for workflowId {workflowInstance.WorkflowId}");
-                    }
-                }
-            }
         }
 
     }

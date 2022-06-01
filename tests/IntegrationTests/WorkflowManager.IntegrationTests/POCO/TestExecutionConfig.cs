@@ -46,5 +46,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.POCO
 
             public static string WorkflowInstanceCollection { get; set; }
         }
+
+        public static class MinIOConfig
+        {
+            public static string ConnectionString { get; set; }
+            public static string User { get; set; }
+            public static string Password { get; set; }
+            public static string BucketName { get; set; }
+            public static string ServiceAssemblyName { get; set; }
+        }
     }
 }

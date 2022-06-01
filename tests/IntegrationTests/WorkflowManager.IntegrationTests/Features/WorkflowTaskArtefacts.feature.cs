@@ -168,11 +168,19 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Create artefact in MinIO, publish task update message with artefact as output")]
         [NUnit.Framework.CategoryAttribute("WorkflowTaskArtefacts")]
-        public virtual void CreateArtefactInMinIOPublishTaskUpdateMessageWithArtefactAsOutput()
+        [NUnit.Framework.TestCaseAttribute("output_artefact_file", null)]
+        [NUnit.Framework.TestCaseAttribute("output_artefact_dir", null)]
+        public virtual void CreateArtefactInMinIOPublishTaskUpdateMessageWithArtefactAsOutput(string task_Update_Message, string[] exampleTags)
         {
-            string[] tagsOfScenario = new string[] {
+            string[] @__tags = new string[] {
                     "WorkflowTaskArtefacts"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            string[] tagsOfScenario = @__tags;
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("Task_Update_Message", task_Update_Message);
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create artefact in MinIO, publish task update message with artefact as output", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
 #line 20
 this.ScenarioInitialize(scenarioInfo);
@@ -204,13 +212,13 @@ this.ScenarioInitialize(scenarioInfo);
     testRunner.And("I have a Workflow Instance Single_Task_Completed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 24
-    testRunner.When("I publish a task update message output_artefact", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+    testRunner.When(string.Format("I publish a task update message {0}", task_Update_Message), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 25
-    testRunner.Then("The workflow instance is updated with correct file path", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("I can see 1 Workflow Instance is created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 26
-    testRunner.And("The task dispatch message is updated with correct file path", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("1 Task Dispatch event is published", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -225,7 +233,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "WorkflowTaskArtefacts"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Bucket exists in MinIO, send task dispatch with non existant file path", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 29
+#line 33
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -245,19 +253,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 30
+#line 34
     testRunner.Given("I have a bucket in MinIO dicom", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 31
-    testRunner.And("I have a clinical workflow", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 35
+    testRunner.And("I have a clinical workflow Single_Task_Context_Input", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 32
-    testRunner.And("I have a workflow instance", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 36
+    testRunner.When("I publish a Workflow Request Message Context_Input_AE", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 33
-    testRunner.When("I publish a task dispatch Message non_existant_filepath-required", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 37
+    testRunner.When("I publish a task update message output_artefact", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 34
+#line 38
     testRunner.Then("The workflow instance fails", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -273,7 +281,7 @@ this.ScenarioInitialize(scenarioInfo);
                     "WorkflowTaskArtefacts"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Bucket exists in MinIO, send task dispatch with non existant artefact", null, tagsOfScenario, argumentsOfScenario, this._featureTags);
-#line 37
+#line 41
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             bool isScenarioIgnored = default(bool);
@@ -293,16 +301,19 @@ this.ScenarioInitialize(scenarioInfo);
             else
             {
                 this.ScenarioStart();
-#line 38
+#line 42
     testRunner.Given("I have a bucket in MinIO dicom", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-#line 39
-    testRunner.And("I have a clinical workflow", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 43
+    testRunner.And("I have a clinical workflow Single_Task_Context_Input", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 40
-    testRunner.When("I publish a workflow instance non_existant_artefact", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 44
+    testRunner.And("I have a Workflow Instance non_existant_artefact", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
-#line 41
+#line 45
+    testRunner.When("I publish a Workflow Request Message Context_Input_AE", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 46
     testRunner.Then("The workflow instance fails", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

@@ -19,6 +19,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
         private RetryPolicy<List<TaskDispatchEvent>> RetryTaskDispatches { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
+        public string PayloadId { get; private set; }
 
         public DataHelper(RabbitConsumer taskDispatchConsumer, MongoClientUtil mongoClient)
         {
@@ -26,6 +27,10 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             MongoClient = mongoClient;
             RetryWorkflowInstances = Policy<List<WorkflowInstance>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
             RetryTaskDispatches = Policy<List<TaskDispatchEvent>>.Handle<Exception>().WaitAndRetry(retryCount: 10, sleepDurationProvider: _ => TimeSpan.FromMilliseconds(500));
+        }
+        public string GetPayloadId()
+        {
+            return PayloadId = Guid.NewGuid().ToString();
         }
 
         public WorkflowRevision GetWorkflowRevisionTestData(string name)

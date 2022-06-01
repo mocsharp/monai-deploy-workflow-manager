@@ -28,6 +28,7 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
         private static RabbitConsumer? TaskDispatchConsumer { get; set; }
         private static RabbitPublisher? TaskUpdatePublisher { get; set; }
         private static MongoClientUtil? MongoClient { get; set; }
+        private static MinioClientUtil? MinioClient { get; set; }
         private IObjectContainer ObjectContainer { get; set; }
 
         /// <summary>
@@ -58,10 +59,17 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             TestExecutionConfig.MongoConfig.WorkflowCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowCollectionName");
             TestExecutionConfig.MongoConfig.WorkflowInstanceCollection = config.GetValue<string>("WorkloadManagerDatabase:WorkflowInstanceCollectionName");
 
+            TestExecutionConfig.MinIOConfig.ConnectionString = "localhost:9000";
+            TestExecutionConfig.MinIOConfig.User = "minioadmin";
+            TestExecutionConfig.MinIOConfig.Password = "minioadmin";
+            TestExecutionConfig.MinIOConfig.BucketName = "monaideploy";
+            TestExecutionConfig.MinIOConfig.ServiceAssemblyName = config.GetValue<string>("storage:serviceAssemblyName");
+
             WorkflowPublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.WorkflowRequestQueue);
             TaskDispatchConsumer = new RabbitConsumer(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskDispatchQueue);
             TaskUpdatePublisher = new RabbitPublisher(RabbitConnectionFactory.GetConnectionFactory(), TestExecutionConfig.RabbitConfig.Exchange, TestExecutionConfig.RabbitConfig.TaskUpdateQueue);
             MongoClient = new MongoClientUtil();
+            MinioClient = new MinioClientUtil();
             WebAppFactory.SetupWorkflowManger();
         }
 
@@ -99,6 +107,12 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
             }
         }
 
+        [BeforeTestRun(Order = 2)]
+        public async static Task SetupBucket()
+        {
+            await MinioClient.CreateBucket(TestExecutionConfig.MinIOConfig.BucketName);
+        }
+
         /// <summary>
         /// Adds Rabbit and Mongo clients to Specflow IoC container for test scenario being executed.
         /// </summary>
@@ -115,10 +129,11 @@ namespace Monai.Deploy.WorkflowManagerIntegrationTests
 
         [BeforeTestRun(Order = 1)]
         [AfterTestRun(Order = 0)]
-        public static void ClearTestData()
+        public async static Task ClearTestData()
         {
             MongoClient.DeleteAllWorkflowDocuments();
             MongoClient.DeleteAllWorkflowInstances();
+            await MinioClient.DeleteBucket(TestExecutionConfig.MinIOConfig.BucketName);
         }
 
         /// <summary>

@@ -449,14 +449,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.TestData
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
-                            Status = TaskExecutionStatus.Dispatched
+                            Status = TaskExecutionStatus.Dispatched,
+                           // OutputArtifacts = "" // Need to add artifacts
                         },
                         new TaskExecution()
                         {
                             ExecutionId = Guid.NewGuid().ToString(),
                             TaskId = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Id,
                             TaskType = Helper.GetWorkflowByName("Multi_Task_Workflow_Invalid_Task_Destination").WorkflowRevision.Workflow.Tasks[0].Type,
-                            Status = TaskExecutionStatus.Accepted
+                            Status = TaskExecutionStatus.Accepted,
+                           // InputArtifacts = "" // Need to add artifacts
                         }
                     }
                 }

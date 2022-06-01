@@ -1,11 +1,9 @@
 // SPDX-FileCopyrightText: © 2021-2022 MONAI Consortium
 // SPDX-License-Identifier: Apache License 2.0
 
+using System.Reflection;
 using BoDi;
-using FluentAssertions;
-using Monai.Deploy.Messaging.Events;
-using Monai.Deploy.Messaging.Messages;
-using Monai.Deploy.WorkflowManager.IntegrationTests.Models;
+using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
@@ -17,6 +15,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         private RabbitPublisher WorkflowPublisher { get; set; }
         private RabbitConsumer TaskDispatchConsumer { get; set; }
         private MongoClientUtil MongoClient { get; set; }
+        private MinioClientUtil MinioClient { get; set; }
         private Assertions Assertions { get; set; }
         private DataHelper DataHelper { get; set; }
 
@@ -25,14 +24,15 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             WorkflowPublisher = objectContainer.Resolve<RabbitPublisher>("WorkflowPublisher");
             TaskDispatchConsumer = objectContainer.Resolve<RabbitConsumer>("TaskDispatchConsumer");
             MongoClient = objectContainer.Resolve<MongoClientUtil>();
+            MinioClient = objectContainer.Resolve<MinioClientUtil>();
             Assertions = new Assertions();
             DataHelper = objectContainer.Resolve<DataHelper>();
         }
 
         [Given(@"I have a bucket in MinIO (.*)")]
-        public void GivenIHaveABucketInMinIO(string name)
+        public async Task GivenIHaveABucketInMinIO(string name)
         {
-            throw new PendingStepException();
+            await MinioClient.AddFileToStorage(Path.Combine(GetDirectory(), "DICOMs", "MR000000.dcm"), TestExecutionConfig.MinIOConfig.BucketName, DataHelper.GetPayloadId());
         }
 
         [Then(@"I can see a task dispatch event with a path to the DICOM bucket")]
@@ -81,6 +81,16 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         public void WhenIPublishAWorkflowInstance()
         {
             throw new PendingStepException();
+        }
+
+        private string GetDirectory()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+        [AfterScenario]
+        public async Task DeleteObjects()
+        {
+            await MinioClient.RemoveObjects(TestExecutionConfig.MinIOConfig.BucketName, DataHelper.PayloadId);
         }
 
     }

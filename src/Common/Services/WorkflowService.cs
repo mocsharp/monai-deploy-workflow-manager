@@ -49,5 +49,12 @@ namespace Monai.Deploy.WorkflowManager.Common.Services
 
             return await _workflowRepository.UpdateAsync(workflow, existingWorkflow);
         }
+
+        public async Task<bool> DeleteAsync(string id)
+        {
+            Guard.Against.NullOrWhiteSpace(id);
+
+            return await _workflowRepository.DeleteAsync(id);
+        }
     }
 }

@@ -50,5 +50,12 @@ namespace Monai.Deploy.WorkflowManager.Database.Interfaces
         /// <param name="workflow">Workflow object to create.</param>
         /// <param name="existingWorkflow">Existing Workflow object to update.</param>
         Task<string> UpdateAsync(Workflow workflow, WorkflowRevision existingWorkflow);
+
+        /// <summary>
+        /// Hard deletes workflow
+        /// </summary>
+        /// <param name="workflow"></param>
+        /// <returns></returns>
+        Task<bool> DeleteAsync(string id);
     }
 }

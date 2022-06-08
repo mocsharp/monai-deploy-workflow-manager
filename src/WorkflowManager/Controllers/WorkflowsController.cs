@@ -133,6 +133,26 @@ public class WorkflowsController : ControllerBase
 
             return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
         }
+    }
+
+    /// <summary>
+    /// Delete a workflow by the ID.
+    /// </summary>
+    /// <param name="id">The Workflow Id.</param>
+    /// <returns>The ID of the deleted Workflow.</returns>
+    [Route("{id}")]
+    [HttpDelete]
+    public async Task<IActionResult> DeleteAsync([FromRoute] string id)
+    {
+        if (string.IsNullOrWhiteSpace(id) || !Guid.TryParse(id, out _))
+        {
+            this._logger.LogDebug($"{nameof(DeleteAsync)} - Failed to validate {nameof(id)}");
+
+            return Problem(
+                $"Failed to validate {nameof(id)}, not a valid guid",
+                $"/workflows/{id}",
+                (int)HttpStatusCode.BadRequest);
+        }
 
         try
         {
@@ -150,6 +170,16 @@ public class WorkflowsController : ControllerBase
         catch (Exception e)
         {
             return Problem($"Unexpected error occured: {e.Message}", $"/workflows", (int)HttpStatusCode.InternalServerError);
+            var workflow = await _workflowService.DeleteAsync(id);
+
+            return Ok(workflow);
+        }
+        catch (Exception ex)
+        {
+            return Problem(
+                $"Unexpected error occured: {ex.Message}",
+                $"/workflows/{nameof(id)}",
+                (int)HttpStatusCode.InternalServerError);
         }
     }
 }

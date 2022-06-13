@@ -103,6 +103,14 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
             actualWorkflow.Should().BeEquivalentTo(workflowUpdate[0]);
         }
 
+        internal void AssertWorkflowMarkedAsDeleted(List<WorkflowRevision> workflowRevisions)
+        {
+            foreach (var workflowRevision in workflowRevisions)
+            {
+                //workflowRevision.Workflow.deleted.Should().BeTrue;
+            }
+        }
+
         public void AssertWorkflowInstanceList(List<WorkflowInstance> expectedWorkflowInstances, List<WorkflowInstance> actualWorkflowInstances)
         {
             actualWorkflowInstances.Should().HaveCount(expectedWorkflowInstances.Count);

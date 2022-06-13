@@ -29,6 +29,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         [Given(@"I have an endpoint (.*)")]
         public void GivenIHaveAnEndpoint(string endpoint) => ApiHelper.SetUrl(new Uri(TestExecutionConfig.ApiConfig.BaseUrl + endpoint));
 
+        [Given(@"I send a (.*) request")]
         [When(@"I send a (.*) request")]
         public void WhenISendARequest(string verb)
         {
@@ -67,6 +68,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             Assertions.AssertWorkflowInstance(DataHelper.WorkflowInstances, actualWorkflowInstance);
         }
 
+        [When(@"I have a body (.*)")]
         [Given(@"I have a body (.*)")]
         public void GivenIHaveABody(string name)
         {
@@ -90,6 +92,20 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             var workflowRevisions = MongoClient.GetWorkflowRevisionsByWorkflowId(DataHelper.WorkflowRevisions[0].WorkflowId);
             Assertions.AssertWorkflowRevisionDetailsAfterUpdateRequest(workflowRevisions, DataHelper.Workflows, DataHelper.WorkflowRevisions);
+        }
+
+        [Then(@"all revisions of the workflow are marked as deleted")]
+        public void ThenAllRevisionsOfTheWorkflowAreMarkedAsDeleted()
+        {
+            var workflowRevisions = MongoClient.GetWorkflowRevisionsByWorkflowId(DataHelper.WorkflowRevisions[0].WorkflowId);
+            Assertions.AssertWorkflowMarkedAsDeleted(workflowRevisions);
+        }
+
+        [Then(@"the deleted workflow is not returned")]
+        public void ThenTheDeletedWorkflowIsNotReturned()
+        {
+            var result = ApiHelper.Response.Content.ReadAsStringAsync().Result;
+            result.Should().Be("[]");
         }
     }
 }

@@ -91,18 +91,5 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
             var workflowRevisions = MongoClient.GetWorkflowRevisionsByWorkflowId(DataHelper.WorkflowRevisions[0].WorkflowId);
             Assertions.AssertWorkflowRevisionDetailsAfterUpdateRequest(workflowRevisions, DataHelper.Workflows, DataHelper.WorkflowRevisions);
         }
-
-        //[Scope(Tag = "WorkflowInstanceApi")]
-        //[AfterScenario(Order = 1)]
-        //public void DeleteTestData()
-        //{
-        //    if (DataHelper.WorkflowInstances.Count > 0)
-        //    {
-        //        foreach (var workflowInstance in DataHelper.WorkflowInstances)
-        //        {
-        //            MongoClient.DeleteWorkflowInstance(workflowInstance.Id);
-        //        }
-        //    }
-        //}
     }
 }

@@ -133,6 +133,24 @@ public class WorkflowsController : ControllerBase
 
             return Problem($"Failed to validate {nameof(workflow)}: {string.Join(", ", validationErrors)}", $"/workflows/{id}", (int)HttpStatusCode.BadRequest);
         }
+
+        try
+        {
+            var workflowId = await _workflowService.UpdateAsync(workflow, id);
+
+            if (workflowId == null)
+            {
+                _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to find workflow with Id: {id}");
+
+                return NotFound($"Failed to find workflow with Id: {id}");
+            }
+
+            return StatusCode(StatusCodes.Status201Created, new CreateWorkflowResponse(workflowId));
+        }
+        catch (Exception e)
+        {
+            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", (int)HttpStatusCode.InternalServerError);
+        }
     }
 
     /// <summary>
@@ -157,20 +175,6 @@ public class WorkflowsController : ControllerBase
 
         try
         {
-            var workflowId = await _workflowService.UpdateAsync(workflow, id);
-
-            if (workflowId == null)
-            {
-                _logger.LogDebug($"{nameof(UpdateAsync)} - Failed to find workflow with Id: {id}");
-
-                return NotFound($"Failed to find workflow with Id: {id}");
-            }
-
-            return StatusCode(StatusCodes.Status201Created, new CreateWorkflowResponse(workflowId));
-        }
-        catch (Exception e)
-        {
-            return Problem($"Unexpected error occured: {e.Message}", $"/workflows", (int)HttpStatusCode.InternalServerError);
             var workflow = await _workflowService.DeleteAsync(id);
 
             return Ok(workflow);

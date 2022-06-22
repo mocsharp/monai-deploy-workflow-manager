@@ -45,3 +45,17 @@ Scenario Outline: Bucket exists in MinIO, send task dispatch with non existant a
     And I have a Workflow Instance non_existant_artefact
     When I publish a Workflow Request Message Context_Input_AE
     Then The workflow instance fails
+
+@TaskArtefacts
+Scenario: Send task dispatch with artefact, recieve task update with same artefact
+    Given I have a bucket in MinIO dicom
+    And I have an artefact in the bucket dicom called basic_artefact
+    When I publish a task dispatch message Context_Input_AE with artefact basic_artefact
+    Then I recieve a task update message with artefact basic_artefact
+
+@TaskArtefacts
+Scenario: Send task dispatch without, recieve task update without artefact
+    Given I have a bucket in MinIO dicom
+    And I have an artefact in the bucket dicom called basic_artefact
+    When I publish a task dispatch message Context_Input_AE with artefact basic_artefact
+    Then I recieve a task update message with artefact basic_artefact

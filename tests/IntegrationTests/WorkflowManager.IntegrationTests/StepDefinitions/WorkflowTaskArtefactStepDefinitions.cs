@@ -3,7 +3,8 @@
 
 using System.Reflection;
 using BoDi;
-using Monai.Deploy.WorkflowManager.IntegrationTests.POCO;
+using Monai.Deploy.Messaging.Events;
+using Monai.Deploy.Messaging.Messages;
 using Monai.Deploy.WorkflowManager.IntegrationTests.Support;
 
 namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
@@ -89,6 +90,32 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.StepDefinitions
         {
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
+
+        [Given(@"I have an artefact in the bucket (.*)")]
+        public async Task GivenIHaveAnArtefactInTheBucketCalled(string name)
+        {
+            var pathname = Path.Combine(GetDirectory(), "DICOMs", "MR000000.dcm");
+            await MinioClient.AddFileToStorage(pathname, name, DataHelper.GetPayloadId());
+        }
+
+        [When(@"I publish a task dispatch message (.*)")]
+        public void WhenIPublishATaskDispatchMessage(string name)
+        {
+            var message = new JsonMessage<TaskDispatchEvent>(
+                DataHelper.GetTaskDispatchTestData(name),
+                "16988a78-87b5-4168-a5c3-2cfc2bab8e54",
+                Guid.NewGuid().ToString(),
+                string.Empty);
+
+            WorkflowPublisher.PublishMessage(message.ToMessage());
+        }
+
+        [Then(@"I recieve a task update message")]
+        public void ThenIRecieveATaskUpdateMessage()
+        {
+            return;
+        }
+
 
         /*[AfterScenario]
         public async Task DeleteObjects()

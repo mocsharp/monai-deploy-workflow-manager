@@ -13,6 +13,7 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
     public class DataHelper
     {
         public WorkflowRequestMessage WorkflowRequestMessage = new WorkflowRequestMessage();
+        public TaskDispatchEvent TaskDispatchEvent = new TaskDispatchEvent();
         public List<WorkflowInstance> WorkflowInstances = new List<WorkflowInstance>();
         public TaskUpdateEvent TaskUpdateEvent = new TaskUpdateEvent();
         public List<TaskDispatchEvent> TaskDispatchEvents = new List<TaskDispatchEvent>();
@@ -110,6 +111,28 @@ namespace Monai.Deploy.WorkflowManager.IntegrationTests.Support
                     WorkflowRequestMessage = workflowRequest.WorkflowRequestMessage;
 
                     return workflowRequest.WorkflowRequestMessage;
+                }
+                else
+                {
+                    throw new Exception($"Workflow request {name} does not have any applicable test data, please check and try again!");
+                }
+            }
+            else
+            {
+                throw new Exception($"Workflow request {name} does not have any applicable test data, please check and try again!");
+            }
+        }
+        public TaskDispatchEvent GetTaskDispatchTestData(string name)
+        {
+            var taskDispatch = TaskDispatchesTestData.TestData.FirstOrDefault(c => c.Name.Contains(name));
+
+            if (taskDispatch != null)
+            {
+                if (taskDispatch.TaskDispatchEvent != null)
+                {
+                    TaskDispatchEvent = taskDispatch.TaskDispatchEvent;
+
+                    return taskDispatch.TaskDispatchEvent;
                 }
                 else
                 {

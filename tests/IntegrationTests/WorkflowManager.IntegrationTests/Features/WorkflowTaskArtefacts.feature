@@ -49,13 +49,13 @@ Scenario Outline: Bucket exists in MinIO, send task dispatch with non existant a
 @TaskArtefacts
 Scenario: Send task dispatch with artefact, recieve task update with same artefact
     Given I have a bucket in MinIO dicom
-    And I have an artefact in the bucket dicom called basic_artefact
-    When I publish a task dispatch message Context_Input_AE with artefact basic_artefact
-    Then I recieve a task update message with artefact basic_artefact
+    And I have an artefact in the bucket dicom
+    When I publish a task dispatch message Task-Dispatch-Event
+    Then I recieve a task update message 
 
 @TaskArtefacts
 Scenario: Send task dispatch without, recieve task update without artefact
     Given I have a bucket in MinIO dicom
-    And I have an artefact in the bucket dicom called basic_artefact
-    When I publish a task dispatch message Context_Input_AE with artefact basic_artefact
-    Then I recieve a task update message with artefact basic_artefact
+    And I have an artefact in the bucket dicom
+    When I publish a task dispatch message Task-Dispatch-Event
+    Then I recieve a task update message

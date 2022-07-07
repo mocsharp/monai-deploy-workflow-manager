@@ -54,3 +54,62 @@ Scenario: Workflow task update test for bucket minio
     When I publish a Task Update Message Task_status_update_for_bucket_minio with status Succeeded 
     Then I can see the status of the Task is Succeeded
 
+@TaskExport
+Scenario: Export task with single destination is in progress, export message is sent 
+    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
+    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1
+    And I have a payload dicom and bucket in MinIO minio
+    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded 
+    Then 1 Task Dispatch event is published
+    And 1 Export Request message is published
+
+@TaskExport
+Scenario: Export task with mutliple destinations is in progress, export message is sent 
+    Given I have a clinical workflow Workflow_Revision_for_export_multi_dest_1
+    And I have a Workflow Instance Workflow_Instance_for_export_multi_dest_1
+    And I have a payload dicom and bucket in MinIO minio
+    When I publish a Task Update Message Task_status_update_for_export_multi_dest_1 with status Succeeded 
+    Then 1 Task Dispatch event is published
+    And 1 Export Request message is published
+
+@TaskExport
+Scenario: Export task with single destination and no artifact is in progress, export message is not sent
+    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
+    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1
+    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded 
+    Then 1 Task Dispatch event is published
+    And An Export Request message is not published
+
+@TaskExport
+Scenario: Export request complete message is sent as Succeeded, next task dispatched
+    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
+    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1
+    And I have a payload dicom and bucket in MinIO minio
+    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded
+    And I publish an Export Request message Export_request_for_export_single_dest_1 with status Succeeded
+    Then The export request in the worfkflow instance Workflow_Instance_for_export_single_dest_1 is updated to Succeeded
+    And 1 Task Dispatch event is published
+
+@TaskExport
+Scenario: Export request complete message is sent as Failed, workflow is Failed
+    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
+    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1
+    And I have a payload dicom and bucket in MinIO minio
+    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded
+    And I publish an Export Request message Export_request_for_export_single_dest_1 with status Failed
+    Then The export request in the worfkflow instance Workflow_Instance_for_export_single_dest_1 is updated to Failed
+    And Workflow Instance status is Failed
+
+@TaskExport
+Scenario: Export request complete message is sent as Partial Failed, workflow is Failed
+    Given I have a clinical workflow Workflow_Revision_for_export_single_dest_1
+    And I have a Workflow Instance Workflow_Instance_for_export_single_dest_1
+    And I have a payload dicom and bucket in MinIO minio
+    When I publish a Task Update Message Task_status_update_for_export_single_dest_1 with status Succeeded
+    And I publish an Export Request message Export_request_for_export_single_dest_1 with status Partial Failed
+    Then The export request in the worfkflow instance Workflow_Instance_for_export_single_dest_1 is updated to Failed
+    And Workflow Instance status is Failed
+    
+
+
+

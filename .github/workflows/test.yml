@@ -138,7 +138,7 @@ jobs:
           ${{ runner.os }}-nuget
 
     - name: Install SonarCloud scanner
-      if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      #if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
       run: dotnet tool install --global dotnet-sonarscanner
 
     - name: Begin SonarScanner

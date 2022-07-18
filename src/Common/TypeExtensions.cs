@@ -43,7 +43,7 @@ namespace Monai.Deploy.WorkflowManager.Common
 
                           if (assembly is null)
                           {
-                              assembly = Assembly.LoadFile($"{AppDomain.CurrentDomain.BaseDirectory}{name.FullName}.dll");
+                              assembly = Assembly.Load($"{AppDomain.CurrentDomain.BaseDirectory}{name.FullName}.dll");
                           }
 
                           return assembly;

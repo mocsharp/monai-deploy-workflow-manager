@@ -121,13 +121,6 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
             ObjectContainer.RegisterInstanceAs(dataHelper);
         }
 
-        //[BeforeTestRun(Order = 1)]
-        //[AfterTestRun(Order = 0)]
-        //public async static Task ClearTestData()
-        //{
-        //    await MinioClient.DeleteBucket(TestExecutionConfig.MinIOConfig.BucketName);
-        //}
-
         /// <summary>
         /// Runs after all tests to closes Rabbit connections.
         /// </summary>
@@ -136,6 +129,8 @@ namespace Monai.Deploy.WorkflowManager.TaskManager.IntegrationTests
         {
             TaskDispatchPublisher?.CloseConnection();
             TaskUpdateConsumer?.CloseConnection();
+            TaskCallbackPublisher?.CloseConnection();
+            ClinicalReviewConsumer?.CloseConnection();
             Host?.StopAsync();
         }
     }

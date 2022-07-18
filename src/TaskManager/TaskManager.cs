@@ -330,24 +330,17 @@ namespace Monai.Deploy.WorkflowManager.TaskManager
         {
             Guard.Against.Null(storages, nameof(storages));
 
-            try
+            foreach (var storage in storages)
             {
-                foreach (var storage in storages)
+                var credentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
+                storage.Credentials = new Credentials
                 {
-                    var credentials = await _storageService.CreateTemporaryCredentialsAsync(storage.Bucket, storage.RelativeRootPath, _options.Value.TaskManager.TemporaryStorageCredentialDurationSeconds, _cancellationToken).ConfigureAwait(false);
-                    storage.Credentials = new Credentials
-                    {
-                        AccessKey = credentials.AccessKeyId,
-                        AccessToken = credentials.SecretAccessKey,
-                        SessionToken = credentials.SessionToken,
-                    };
-                }
+                    AccessKey = credentials.AccessKeyId,
+                    AccessToken = credentials.SecretAccessKey,
+                    SessionToken = credentials.SessionToken,
+                };
             }
-                        catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
-}
+        }
 
         private void AcknowledgeMessage<T>(JsonMessage<T> message)
         {
